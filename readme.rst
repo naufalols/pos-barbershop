@@ -3,6 +3,34 @@ POSbarber
 ###################
 
 POSbarber adalah layanan system kasir untuk sebuah barbershop
+System ini dibuat simple,
+
+
+*******************
+Login
+*******************
+Pengguna
+Username = user1
+Password = useruser
+
+Admin
+Username = Admin
+Password = useruser
+
+
+*******************
+Database
+*******************
+install database in your server 
+barberbois/database/barberotong.sql
+
+
+
+
+
+
+
+
 
 *******************
 Release Information
