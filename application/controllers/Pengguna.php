@@ -212,7 +212,9 @@ class Pengguna extends CI_Controller
 
 		$totalHarga = NULL;
 		$siap_cetak = $this->Pengguna_model->siap_cetak($nota);
-		$barberman = $siap_cetak['row']['nama'];
+		$siap_cetak = $siap_cetak['result'];
+		$siap_cetak_row = $siap_cetak['row'];
+		$barberman = $siap_cetak_row['nama'];
 		$this->load->library("EscPos");
 		$this->load->library("Item");
 		// foreach ($siap_cetak as $key) {
@@ -229,7 +231,7 @@ class Pengguna extends CI_Controller
 			$connector = new Escpos\PrintConnectors\WindowsPrintConnector("boistest");
 			/* Print a "Hello world" receipt" */
 			$printer = new Escpos\Printer($connector);
-			foreach ($siap_cetak['result'] as $key) {
+			foreach ($siap_cetak as $key) {
 				$items[] = new newitem($key['nm_menu'], number_format($key['harga']));
 				$totalHarga += $key['harga'];
 			}

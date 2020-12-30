@@ -86,8 +86,11 @@ class Pengguna_model extends  CI_Model
 						->join('menu', 'menu.id = penjualan.id_menu', 'left')
 						->where('id_nota =', $data)
 						->get();
-		$result['result'] = $query->result_array();
-		$result['row'] = $query->row_array();
-		return $result;
+		$result = $query->result_array();
+		$row	= $query->row_array();
+		return array(
+			'result' => $result,
+			'row' => $row,
+		);
 	}
 }

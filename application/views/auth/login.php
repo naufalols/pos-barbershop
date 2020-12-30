@@ -14,7 +14,7 @@
                 <?= $this->session->flashdata('pesan'); ?>
                 <form method="post" action="<?= base_url('auth'); ?>" class="user">
                   <div class="form-group">
-                    <input type="text" class="form-control form-control-user" id="username"  placeholder="Masukkan Email Anda" name="username" value="<?= set_value('username')?>">
+                    <input type="text" class="form-control form-control-user" id="username"  placeholder="Masukkan Username Anda" name="username" value="<?= set_value('username')?>">
                      <?= form_error('username', '<small class="text-danger pl-3">', '</small>'); ?>
                   </div>
                   <div class="form-group">
