@@ -42,10 +42,13 @@
 		<div id="table-transaksi" class="six wide column">
 			<h2 id="tk_cukur" class="ui header">
 				<img src="gambar/patrick.png" class="ui circular image">
+				<?php if (!$keranjangcukur['koko'] || !$keranjangcukur['notas']) : ?>
+					Pilih Capster
+				<?php else : ?>
 				<?= $keranjangcukur['koko'] ?>
-				<!-- <div class="sub header">
-				<?= $keranjangcukur['notas'] ?>
-				</div> -->
+				
+				<?php endif; ?>
+				
 			</h2>
 			<table class="ui celled table">
 				<thead>

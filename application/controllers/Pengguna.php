@@ -7,25 +7,20 @@ class Pengguna extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->library('form_validation');
+		$this->load->model('Pengguna_model');
+		error_reporting(E_ALL & ~E_NOTICE);
 	}
 
 	public function index()
 	{
 		if ($this->session->has_userdata('username')) {
 			$data['pengguna'] = $this->db->get_where('pengguna', ['username' => $this->session->userdata('username')])->row_array();
-			$data['cukur'] = $this->db->get('tk_cukur')->result_array();
-			$data['menu'] = $this->db->get('menu')->result_array();
-			$this->db->select('*');
-			$this->db->select('keranjang.id as idcukur');
-			$this->db->from('keranjang');
-			$this->db->join('menu', 'menu.id = keranjang.id_menu');
-			$data['keranjang'] = $this->db->get()->result_array();
+			$data['cukur'] = $this->Pengguna_model->getAll('tk_cukur');
+			$data['menu'] = $this->Pengguna_model->getAll('menu');
+			$data['keranjang'] = $this->Pengguna_model->getKeranjang();
 
-			$this->db->select('tk_cukur.nama as koko, keranjang_nota.nota as notas ');
-			$this->db->from('keranjang_nota');
-			$this->db->join('tk_cukur', 'tk_cukur.id = keranjang_nota.id_cukur');
-			$data['keranjangcukur'] = $this->db->get()->row_array();
-
+			$data['keranjangcukur'] = $this->Pengguna_model->keranjangcukur();
+			
 			$data['title'] = 'Menu';
 
 			$this->load->view('template/auth_header', $data);
@@ -51,25 +46,9 @@ class Pengguna extends CI_Controller
 				'tk_cukur.nama',
 				'count(penjualan.id) as Total'
 			);
-			$data['total_menu'] = $this->db
-				->select($select)
-				->from('tk_cukur')
-				->join('penjualan', 'penjualan.id_cukur = tk_cukur.id', 'left')
-				->group_by('tk_cukur.nama', 'asc')
-				->where('tgl_nota_cukur >=', "$curr_date 00:00:00")
-				->where('tgl_nota_cukur <=', "$curr_date 23:59:59")
-				->get()
-				->result_array();
+			$data['total_menu'] = $this->Pengguna_model->total_menu();
 
-			$data['penjualan'] = $this->db->select('*')
-				->from('penjualan')
-				->join('tk_cukur', 'penjualan.id_cukur = tk_cukur.id')
-				->join('menu', 'penjualan.id_menu = menu.id')
-				->order_by('penjualan.tgl_nota_cukur', 'desc')
-				->where('tgl_nota_cukur >=', "$curr_date 00:00:00")
-				->where('tgl_nota_cukur <=', "$curr_date 23:59:59")
-				->get()
-				->result_array();
+			$data['penjualan'] = $this->Pengguna_model->penjualan();
 
 			$data['title'] = 'Penjualan';
 			$this->load->view('template/auth_header', $data);
@@ -186,9 +165,7 @@ class Pengguna extends CI_Controller
 
 	public function hapusMenuKeranjang($idkeranjang = NULL)
 	{
-		// $nomorrm = htmlspecialchars($this->input->post('nomorrm', true));
-		// $nama = htmlspecialchars($this->input->post('nama', true));
-		// $idkeranjang = htmlspecialchars($this->input->post('idkeranjang', true));
+	
 		if ($this->session->has_userdata('username')) {
 			$this->db->where('id', $idkeranjang);
 			$this->db->delete('keranjang');
@@ -224,7 +201,6 @@ class Pengguna extends CI_Controller
 		$this->db->delete('keranjang');
 		$this->db->where('nota', $nota);
 		$this->db->delete('keranjang_nota');
-		// $this->session->set_flashdata('pesan_registrasi', '<div class="alert alert-success" role="alert">Ceksongggg</div>');
 		redirect('pengguna/print/' . $nota);
 	}
 
@@ -235,23 +211,8 @@ class Pengguna extends CI_Controller
 		echo $nota;
 
 		$totalHarga = NULL;
-		$siap_cetak = $this->db
-			->select('*')
-			->from('penjualan')
-			->join('tk_cukur', 'tk_cukur.id = penjualan.id_cukur', 'left')
-			->join('menu', 'menu.id = penjualan.id_menu', 'left')
-			->where('id_nota =', $nota)
-			->get()
-			->result_array();
-		$siap_cetak_row = $this->db
-			->select('*')
-			->from('penjualan')
-			->join('tk_cukur', 'tk_cukur.id = penjualan.id_cukur', 'left')
-			->join('menu', 'menu.id = penjualan.id_menu', 'left')
-			->where('id_nota =', $nota)
-			->get()
-			->row_array();
-		$barberman = $siap_cetak_row['nama'];
+		$siap_cetak = $this->Pengguna_model->siap_cetak($nota);
+		$barberman = $siap_cetak['row']['nama'];
 		$this->load->library("EscPos");
 		$this->load->library("Item");
 		// foreach ($siap_cetak as $key) {
@@ -268,7 +229,7 @@ class Pengguna extends CI_Controller
 			$connector = new Escpos\PrintConnectors\WindowsPrintConnector("boistest");
 			/* Print a "Hello world" receipt" */
 			$printer = new Escpos\Printer($connector);
-			foreach ($siap_cetak as $key) {
+			foreach ($siap_cetak['result'] as $key) {
 				$items[] = new newitem($key['nm_menu'], number_format($key['harga']));
 				$totalHarga += $key['harga'];
 			}

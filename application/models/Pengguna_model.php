@@ -1,21 +1,93 @@
 <?php 
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-/**
- * 
- */
-class Pengguna_model extends extends CI_Model
+class Pengguna_model extends  CI_Model
 {
-	
-	function __construct(argument)
+	var $date;
+	var $curr_date;
+	function __construct()
 	{
-		# code...
+		parent::__construct();
+		$date = $this->date = new DateTime("now");
+	 	$this->curr_date = $date->format('Y-m-d ');
+		
 	}
 
-	public function getAllRM()
+	
+
+	public function getAll($data)
 	{
-		$this->datatables->select('nomor_rm,nama,alamat,pekerjaan,tanggal_buat');
-		$this->datatables->from('rekam_medis');
-		$this->datatables->add_column('view', '<a href="javascript:void(0);" class="edit_record btn btn-info btn-xs" data-kode="$1" data-nama="$2" data-harga="$3" data-kategori="$4">Edit</a>  <a href="javascript:void(0);" class="hapus_record btn btn-danger btn-xs" data-kode="$1">Hapus</a>','barang_kode,barang_nama,barang_harga,kategori_id,kategori_nama');
-		return $this->datatables->generate();
+		$query = $this->db->get($data);
+		return $query->result_array();
+	}
+
+	public function getKeranjang()
+	{
+		$this->db->select('*');
+		$this->db->select('keranjang.id as idcukur');
+		$this->db->from('keranjang');
+		$this->db->join('menu', 'menu.id = keranjang.id_menu');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function keranjangcukur()
+	{
+		$this->db->select('tk_cukur.nama AS koko, keranjang_nota.nota AS notas', FALSE);
+		$this->db->from('keranjang_nota');
+		$this->db->join('tk_cukur', 'tk_cukur.id = keranjang_nota.id_cukur');
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) 
+		{
+        	return $query->row_array();
+		} else {
+			return false;
+		}
+	}
+
+	public function total_menu()
+	{
+		
+
+		$select =   array(
+			'tk_cukur.nama',
+			'count(penjualan.id) as Total'
+		);
+		$query = $this->db
+				->select($select)
+				->from('tk_cukur')
+				->join('penjualan', 'penjualan.id_cukur = tk_cukur.id', 'left')
+				->group_by('tk_cukur.nama', 'asc')
+				->where('tgl_nota_cukur >=', "$this->curr_date 00:00:00")
+				->where('tgl_nota_cukur <=', "$this->curr_date 23:59:59")
+				->get();
+		return $query->result_array();
+	}
+
+	public function penjualan()
+	{
+		$query = $this->db->select('*')
+				->from('penjualan')
+				->join('tk_cukur', 'penjualan.id_cukur = tk_cukur.id')
+				->join('menu', 'penjualan.id_menu = menu.id')
+				->order_by('penjualan.tgl_nota_cukur', 'desc')
+				->where('tgl_nota_cukur >=', "$this->curr_date 00:00:00")
+				->where('tgl_nota_cukur <=', "$this->curr_date 23:59:59")
+				->get();
+		return $query->result_array();
+
+	}
+
+	public function siap_cetak($data)
+	{
+		$query = $this->db->select('*')
+						->from('penjualan')
+						->join('tk_cukur', 'tk_cukur.id = penjualan.id_cukur', 'left')
+						->join('menu', 'menu.id = penjualan.id_menu', 'left')
+						->where('id_nota =', $data)
+						->get();
+		$result['result'] = $query->result_array();
+		$result['row'] = $query->row_array();
+		return $result;
 	}
 }
