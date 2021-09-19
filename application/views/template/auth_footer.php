@@ -7,11 +7,11 @@
 
   <!-- Custom scripts for all pages-->
   <script src="<?= base_url('asset/'); ?>js/sb-admin-2.min.js"></script>
-  <script src="<?= base_url('vendor/'); ?>Semantic-UI/semantic.js"></script>
-  <script src="<?= base_url('vendor/'); ?>Semantic-ui-calendar/dist/calendar.min.js"></script>
+  <script src="<?= base_url('asset/vendor/'); ?>Semantic-UI/semantic.js"></script>
+  <script src="<?= base_url('asset/vendor/'); ?>Semantic-UI-Calendar/dist/calendar.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src=" <?= base_url('vendor/'); ?>DataTables/datatables.min.js"> </script>
+  <script src=" <?= base_url('asset/vendor/'); ?>DataTables/datatables.min.js"> </script>
 
   <!-- moment untuk ganti date string -->
   <script src="<?= base_url('asset/'); ?>js/moment-locales.js"></script>

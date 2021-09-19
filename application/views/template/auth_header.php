@@ -19,9 +19,9 @@
   <link href="<?= base_url('asset/'); ?>css/sb-admin-2.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="<?= base_url('vendor/'); ?>DataTables/datatables.min.css" rel="stylesheet">
-  <link href="<?= base_url('vendor/'); ?>Semantic-UI/semantic.css" rel="stylesheet">
-  <link href="<?= base_url('vendor/'); ?>Semantic-ui-calendar/dist/calendar.min.css" rel="stylesheet">
+  <link href="<?= base_url('asset/vendor/'); ?>DataTables/datatables.min.css" rel="stylesheet">
+  <link href="<?= base_url('asset/vendor/'); ?>Semantic-UI/semantic.css" rel="stylesheet">
+  <link href="<?= base_url('asset/vendor/'); ?>Semantic-UI-Calendar/dist/calendar.min.css" rel="stylesheet">
 
 </head>
 
