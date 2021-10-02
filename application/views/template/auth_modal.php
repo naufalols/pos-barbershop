@@ -44,7 +44,7 @@
 	<div class="modal-dialog">
 		<div class="modal-content" style="margin-top:100px;">
 			<div class="modal-header">
-				<h4 class="modal-title" style="text-align:center;">Selesaikan data <span class="nota"></span> ?</h4>
+				<h4 class="modal-title" style="text-align:center;">Selesaikan Keranjang Nota <span class="nota"></span> ?</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 					<span aria-hidden="true">&times;</span>
 				</button>
